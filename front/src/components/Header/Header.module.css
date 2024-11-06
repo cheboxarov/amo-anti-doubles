@@ -1,0 +1,63 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 18px;
+    align-items: center;
+}
+
+.searchInput {
+    width: 96%;
+    height: 30px;
+}
+
+.button {
+    background-color: #000;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    font-size: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.button:hover {
+    background-color: #444;
+    transform: scale(1.05);
+}
+
+.selectEntity {
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    margin-left: 10px;
+}
+  
+.selectEntity:hover {
+    border-color: #000;
+}
+
+.outerInput {
+    background-color: #000;
+    padding: 2px;
+    width: 50%;
+    height: 36px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+}
+
+.searchIcon {
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white; 
+    font-size: 24px; 
+}

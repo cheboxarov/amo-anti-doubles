@@ -1,10 +1,11 @@
 import React from 'react';
 import './Spinner.css';
+import { HashLoader } from 'react-spinners'
 
 const Spinner = () => {
     return (
         <div className="spinner">
-            <div className="loader"></div>
+            <HashLoader />
         </div>
     );
 };

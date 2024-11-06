@@ -1,0 +1,89 @@
+.doublesCont {
+    margin-top: 15px;
+    height: 90vh;
+    overflow-y: auto;
+    border-top: 1px solid #555;
+    border-bottom: 1px solid #555;
+    padding: 15px;
+}
+
+.doublesCont::-webkit-scrollbar {
+width: 8px; 
+}
+
+.doublesCont::-webkit-scrollbar-thumb {
+    background: #000;
+    border-radius: 10px;
+}
+
+.doublesCont::-webkit-scrollbar-thumb:hover {
+    background: #444;
+}
+
+.group {
+    margin: 10px 0;
+    background-color: #ffffff;
+    border: 1px solid #C0C0C0;
+    border-left: 4px solid #000;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+    position: relative;
+}
+
+.group:hover {
+    background-color: #e9e9e9;
+}
+
+.innerGroup {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+  
+.numberContainer {
+    display: flex;
+    align-items: center;
+}
+  
+.number {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-left: 15px;
+}
+  
+.accounts {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+  
+.account {
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+    margin-bottom: 10px;
+    color: #555;
+    transition: color 0.3s;
+    white-space: nowrap;
+}
+
+.account:hover {
+    color: #000;
+}
+  
+.accountCont {
+    border: 1.5px solid #000;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor:pointer
+}
+
+.accountCont:hover {
+    border: 1.5px solid #555;
+}
