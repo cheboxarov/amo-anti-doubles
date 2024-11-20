@@ -3,6 +3,7 @@ import { doubles, search, loading, entityType } from "../../signals/doublesSigna
 import { useSignals } from "@preact/signals-react/runtime";
 import { getDoubles } from "../../services/doublesServices";
 import { FiSearch } from "react-icons/fi";
+import React from "react";
 
 const Header = () => {
 

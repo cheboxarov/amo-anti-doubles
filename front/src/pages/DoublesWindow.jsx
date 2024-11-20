@@ -5,6 +5,7 @@ import styles from './DoublesWindow.module.css';
 import Spinner from '../components/spinner/Spinner';
 import Header from '../components/Header/Header';
 import { loading, doubles } from '../signals/doublesSignals';
+import React from "react";
 
 
 const DoublesWindows = () => {

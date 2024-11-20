@@ -1,9 +1,10 @@
 from fastapi import FastAPI
-from handlers import search_doubles
+from app.handlers import search_doubles_handler
 from middlewares import AuthorizeMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import redis_client
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -11,12 +12,13 @@ async def lifespan(app: FastAPI):
     yield
     await redis_client.close_redis_client()
 
+
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(search_doubles.router)
+app.include_router(search_doubles_handler.router)
 app.add_middleware(AuthorizeMiddleware)
 
-origins = ["http://localhost:3000"]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,

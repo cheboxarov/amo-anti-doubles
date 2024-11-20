@@ -1,6 +1,7 @@
 import styles from './DoublesContainer.module.css';
 import { doubles, search } from '../../signals/doublesSignals';
 import { useSignals } from '@preact/signals-react/runtime';
+import React from "react";
 
 const DoublesContainer = () => {
     useSignals()

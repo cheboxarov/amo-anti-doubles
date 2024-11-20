@@ -19,7 +19,6 @@
     font-size: 15px;
     border-radius: 5px;
     cursor: pointer;
-    margin-bottom: 10px;
     transition: background-color 0.3s, transform 0.3s;
 }
 

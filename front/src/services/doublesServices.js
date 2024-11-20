@@ -8,7 +8,7 @@ export const getDoubles = async () => {
     loading.value = true;
     try {
         const response = await fetchDoubles(entityType.value);
-        doubles.value = response;
+        doubles.value = response.doubles;
     } catch (error) {
         console.log(`Ошибка: ${error}`);
     } finally {
