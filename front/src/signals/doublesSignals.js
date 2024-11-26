@@ -5,3 +5,4 @@ export const loading = signal(false);
 export const search = signal("");
 export const entityType = signal("contacts");
 export const doublesFinded = signal(false)
+export const me = signal(null)

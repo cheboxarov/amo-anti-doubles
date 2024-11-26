@@ -1,13 +1,13 @@
-import aioredis
-from aioredis import Redis
+import redis.asyncio as aioredis
+from redis.asyncio import Redis
+from config import REDIS_URL
 
-redis: Redis = None
+redis: aioredis.Redis = None
 
 
 async def init_redis_pool():
     global redis
-    redis = await aioredis.from_url("redis://localhost:6379", decode_responses=True)
-    print(redis)
+    redis = await aioredis.from_url(REDIS_URL, decode_responses=True)
 
 
 async def close_redis_client():

@@ -1,8 +1,8 @@
-import { TOKEN, SUBDOMAIN, BASE_URL } from "../config"
+import { TOKEN, BASE_URL } from "../config"
 
 
 export const fetchDoubles = async (entityType) => {
-    const response = await fetch(`${BASE_URL}/get_doubles/${SUBDOMAIN}/`, {
+    const response = await fetch(`${BASE_URL}/get_doubles`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${TOKEN}`,
@@ -23,3 +23,15 @@ export const fetchDoubles = async (entityType) => {
         return {}
     }
 }
+
+export const getMe = async () => {
+    const response = await fetch(`${BASE_URL}/me`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "Content-Type": "application/json",
+        },
+    })
+    return await response.json()
+}
+

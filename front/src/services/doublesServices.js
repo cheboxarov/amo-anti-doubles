@@ -1,5 +1,5 @@
-import { doubles, loading, entityType } from "../signals/doublesSignals";
-import { fetchDoubles } from "../api/doublesApi";
+import { doubles, loading, entityType, me } from "../signals/doublesSignals";
+import { fetchDoubles, getMe } from "../api/doublesApi";
 
 export const getDoubles = async () => {
     if (loading.value)
@@ -15,3 +15,12 @@ export const getDoubles = async () => {
         loading.value = false;
     }
 };
+
+export const updateMe = async() => {
+    try {
+        const response = await getMe()
+        me.value = response
+    } catch (error) {
+        console.log("error to get me", error)
+    }
+}

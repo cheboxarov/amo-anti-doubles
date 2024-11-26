@@ -34,19 +34,6 @@ class Repository:
 async def create_repositories(
     database_url=DATABASE_URL,
 ) -> AsyncGenerator[Repository, None]:
-    """
-    Creates a repository instance and initializes the database.
-
-    Args:
-        database_url: The URL of the database to connect to.
-
-    Yields:
-        Repository: An instance of the Repository class.
-
-    Example:
-        async with create_repositories() as repository:
-            # use repository
-    """
     engine = create_async_engine(database_url)
     session_factory = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
     repository = Repository(engine, session_factory)

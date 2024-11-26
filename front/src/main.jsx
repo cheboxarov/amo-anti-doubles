@@ -4,13 +4,10 @@ import App from "./App";
 
 const Widget = {
 	render(self) {
-
 		const intervalId = setInterval(() => {
 			const FormPayment_div = document.querySelector('[id="work-area-st8chxvoec3pba7ysqvjelctt51cnem9lbgrihm2"]');
 			
 			if (FormPayment_div) {
-				console.log("FormPayment_div найден");
-
 				const div = document.createElement('div');
 				const parent = FormPayment_div.parentElement;
 
@@ -22,10 +19,9 @@ const Widget = {
 					</React.StrictMode>
 				);
 
-				// Останавливаем интервал
 				clearInterval(intervalId);
 			}
-		}, 500); // Интервал проверки каждые 500 мс
+		}, 500);
 		return true;
 	},
 	init() {

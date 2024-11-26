@@ -25,7 +25,7 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         )
 
         authorization_header = request.headers.get("Authorization")
-        subdomain = request.headers.get("Host", "example.com").split(".")[0]
+        subdomain = request.headers.get("Origin", "https://example.com").split("//")[1].split(".")[0]
 
         if authorization_header is None or len(authorization_header.split(" ")) != 2:
             return error_response
