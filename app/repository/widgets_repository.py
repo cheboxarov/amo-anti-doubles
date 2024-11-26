@@ -1,34 +1,48 @@
-from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from schemas.widget_schema import WidgetSchema
 from typing import Optional, List
 from sqlalchemy import select, insert, update, delete
 from .models import WidgetModel
+from sqlalchemy.sql import expression
 
 
 class WidgetsRepository:
-
-    def __init__(self, engine: AsyncEngine, session_factory: sessionmaker):
+    def __init__(
+        self, engine: AsyncEngine, session_factory: sessionmaker[AsyncSession]
+    ):
         self.engine = engine
         self.session_factory = session_factory
 
-    async def get_by_id(self, widget_id: int) -> Optional[WidgetSchema]:
-        """Получить виджет по ид"""
+    async def get_by_filter(
+        self, filter: expression.BinaryExpression
+    ) -> Optional[WidgetSchema]:
+        """Получить виджет по фильтру"""
         async with self.session_factory() as session:
-            query = select(WidgetModel).where(WidgetModel.id == widget_id)
+            query = select(WidgetModel).where(filter)
             result = await session.execute(query)
             widget = result.scalar_one_or_none()
-            return WidgetSchema.model_validate(widget) if widget else None
+            if widget:
+                return WidgetSchema.model_validate(widget.__dict__)
+            return None
+
+    async def get_by_id(self, widget_id: int) -> Optional[WidgetSchema]:
+        """Получить виджет по id"""
+        return await self.get_by_filter(WidgetModel.id == widget_id)
+
+    async def get_by_client_id(self, client_id: str):
+        """Получить виджет по клиент ид"""
+        return await self.get_by_filter(WidgetModel.client_id == client_id)
 
     async def get_all(self) -> List[WidgetSchema]:
         """Получить все виджеты"""
         async with self.session_factory() as session:
             query = select(WidgetModel)
-            result = session.execute(query)
+            result = await session.execute(query)
             widgets = result.scalars().all()
-            return [WidgetSchema.model_validate(widget) for widget in widgets]
+            return [WidgetSchema.model_validate(widget.__dict__) for widget in widgets]
 
-    async def create(self, widget: WidgetSchema) -> WidgetSchema:
+    async def create(self, widget: WidgetSchema) -> Optional[WidgetSchema]:
         """Создать виджет"""
         async with self.session_factory() as session:
             async with session.begin():
@@ -38,8 +52,12 @@ class WidgetsRepository:
                     .returning(WidgetModel)
                 )
                 result = await session.execute(query)
-                widget = result.fetchone()
-                return WidgetSchema.model_validate(widget)
+                widget_row = result.fetchone()
+                if widget_row:
+                    return WidgetSchema.model_validate(
+                        widget_row.WidgetModel, from_attributes=True
+                    )
+            return None
 
     async def update(
         self, widget_id: int, widget_data: WidgetSchema
@@ -57,13 +75,17 @@ class WidgetsRepository:
                     .returning(WidgetModel)
                 )
                 result = await session.execute(query)
-                widget = result.fetchone()
-                return WidgetSchema.model_validate(widget) if widget else None
+                widget_row = result.fetchone()
+                if widget_row:
+                    return WidgetSchema.model_validate(
+                        widget_row.WidgetModel, from_attributes=True
+                    )
+            return None
 
     async def delete(self, widget_id: int) -> bool:
-        """Удалить виджет по ид"""
+        """Удалить виджет по id"""
         async with self.session_factory() as session:
             async with session.begin():
                 query = delete(WidgetModel).where(WidgetModel.id == widget_id)
-                result = session.execute(query)
+                result = await session.execute(query)
                 return result.rowcount > 0

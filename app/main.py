@@ -1,5 +1,8 @@
 from fastapi import FastAPI
-from app.handlers import search_doubles_handler
+from handlers.auth_handlers import router as auth_router
+from handlers.search_doubles_handlers import router as s_d_router
+from handlers.widgets_handlers import router as widgets_router
+from handlers.projects_handlers import router as projects_router
 from middlewares import AuthorizeMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -15,7 +18,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(search_doubles_handler.router)
+app.include_router(s_d_router)
+app.include_router(auth_router)
+app.include_router(widgets_router)
+app.include_router(projects_router)
 app.add_middleware(AuthorizeMiddleware)
 
 origins = ["*"]

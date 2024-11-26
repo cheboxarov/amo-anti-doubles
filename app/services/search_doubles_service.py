@@ -1,11 +1,11 @@
-from app.schemas.doubles_schemas import DoubleEntityResponse
+from schemas.doubles_schemas import DoubleEntityResponse
 from py_amo.async_repositories import (
     BaseAsyncRepository,
     ContactsAsyncRepository,
     CompaniesAsyncRepository,
 )
 from py_amo.services import AsyncAmoSession
-from app.schemas.doubles_schemas import FieldName
+from schemas.doubles_schemas import FieldName
 
 
 class FindDoublesService:
