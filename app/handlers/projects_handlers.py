@@ -94,6 +94,5 @@ async def delete_project(
 
 @router.get("/me", response_model=ProjectBaseSchema)
 async def get_me(request: Request):
-    a = 1 / 0
     project = request.state.project
     return project
