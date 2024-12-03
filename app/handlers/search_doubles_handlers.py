@@ -40,7 +40,6 @@ async def search_process_manager(subdomain: str):
             search_processes.remove(subdomain)
         await redis_client.redis.set("search_processes", json.dumps(search_processes))
 
-
 @router.post("/get_doubles")
 async def search_doubles(request_data: GetDoublesRequest, request: Request):
     """

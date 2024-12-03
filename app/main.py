@@ -3,10 +3,14 @@ from handlers.auth_handlers import router as auth_router
 from handlers.search_doubles_handlers import router as s_d_router
 from handlers.widgets_handlers import router as widgets_router
 from handlers.projects_handlers import router as projects_router
-from middlewares import AuthorizeMiddleware
+from middlewares import AuthorizeMiddleware, ExcLoggingMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import redis_client
+from loguru_configurate import configurate_loguru
+
+
+configurate_loguru()
 
 
 @asynccontextmanager
@@ -23,6 +27,7 @@ app.include_router(auth_router)
 app.include_router(widgets_router)
 app.include_router(projects_router)
 app.add_middleware(AuthorizeMiddleware)
+app.add_middleware(ExcLoggingMiddleware)
 
 origins = ["*"]
 
