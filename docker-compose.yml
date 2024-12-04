@@ -22,12 +22,21 @@ services:
     expose:
       - 5432
 
-  app:
+  antidoubles_app:
     restart: always
-    build: ./app
+    build: ./antidoubles_app
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
-      - ./app:/app
+      - ./antidoubles_app:/antidoubles_app
+    expose:
+      - 8000
+
+  auth_app:
+    restart: always
+    build: ./auth_app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./auth_app:/auth_app
     expose:
       - 8000
 
