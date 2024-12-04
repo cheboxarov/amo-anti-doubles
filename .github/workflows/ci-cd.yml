@@ -31,7 +31,7 @@ jobs:
             docker compose up -d --build
             sleep 30
             
-            if [ $(curl -s -o /dev/null -w "%{http_code}" http://localhost:88/auth/) -eq 404 ]; then
+            if [ $(curl -s -o /dev/null -w "%{http_code}" http://localhost:88/auth/dsfg) -eq 401 ]; then
               echo "Контейнер auth работает отлично"
             else
               echo "Auth error:"
@@ -46,7 +46,7 @@ jobs:
               exit 1
             fi
 
-            if [ $(curl -s -o /dev/null -w "%{http_code}" http://localhost:88/antidoubles/) -eq 404 ]; then
+            if [ $(curl -s -o /dev/null -w "%{http_code}" http://localhost:88/antidoubles/sdfg) -eq 401 ]; then
               echo "Контейнер antidoubles работает отлично"
             else
               echo "Auth error:"
