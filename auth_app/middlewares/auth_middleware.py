@@ -96,7 +96,7 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         if (user_data := await redis_client.redis.get(f"token:{token}")) is not None:
             is_admin = json.loads(user_data)["is_admin"]
         else:
-            project = auth_service.update_token(project)
+            project = await auth_service.update_token(project)
             amo_api = project_service.get_api(project)
             users = await amo_api.users.get_all(with_="uuid")
             try:
