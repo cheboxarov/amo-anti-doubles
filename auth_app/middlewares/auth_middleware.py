@@ -64,6 +64,10 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         If the request is authorized, it sets the request.state.is_admin and request.state.project and calls the next middleware in the chain with the modified request.
         The response from the next middleware is returned.
         """
+
+        if request.url.path == "/install":
+            return await call_next(request)
+
         services = await create_services()
         project_service = services.projects
         widget_service = services.widgets
@@ -108,5 +112,4 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         request.state.project = project
         request.state.is_admin = is_admin
 
-        response: Response = await call_next(request)
-        return response
+        return await call_next(request)
