@@ -55,7 +55,6 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         return widget, None
 
 
-
     async def dispatch(self, request: Request, call_next):
         """The dispatch function of the middleware is called for each incoming request.
 
@@ -71,6 +70,7 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         services = await create_services()
         project_service = services.projects
         widget_service = services.widgets
+        auth_service = services.auth
 
         error_response = JSONResponse(
             content={"error": "Not authorized"}, status_code=401
@@ -96,6 +96,7 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         if (user_data := await redis_client.redis.get(f"token:{token}")) is not None:
             is_admin = json.loads(user_data)["is_admin"]
         else:
+            project = auth_service.update_token(project)
             amo_api = project_service.get_api(project)
             users = await amo_api.users.get_all(with_="uuid")
             try:
@@ -104,7 +105,7 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
                     f"token:{token}", json.dumps({
                         "is_admin": is_admin,
                         "project": project.model_dump()
-                        }), ex=900
+                        }), ex=300
                 )
             except KeyError:
                 return error_response
