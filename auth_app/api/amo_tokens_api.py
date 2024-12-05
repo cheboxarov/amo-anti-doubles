@@ -15,7 +15,10 @@ def validate_amo_response(func):
                 logger.error(
                     f"bad answer from amo with non-JSON content: {response.text}"
                 )
-            logger.error(f"bad request: {response.request.body}")
+            if hasattr(response.request, "body"):
+                logger.error(f"bad request body: {response.request.body}")
+            if hasattr(response.request, "params"):
+                logger.error(f"bad request params: {response.request.params}")
             raise
         return response.json()
 
@@ -52,7 +55,7 @@ class AmoTokensApi:
             "client_secret": client_secret,
             "grant_type": "refresh_token",
             "refresh_token": refresh_token,
-            "redirect_uri": "https://apps.widgets-tema.ru/amo-roistat-fix/install/",
+            "redirect_uri": INSTALL_WIDET,
         }
         async with AsyncClient() as client:
             response = await client.post(url, json=body)
