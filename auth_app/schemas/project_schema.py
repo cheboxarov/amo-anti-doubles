@@ -25,7 +25,7 @@ class ProjectUpdateSchema(BaseModel):
 
 
 class ProjectSchema(ProjectBaseSchema):
-    id: int
+    id: Optional[int] = None
     access_token: Optional[str]
     refresh_token: Optional[str]
 
