@@ -51,7 +51,8 @@ class AuthService:
         return await self.projects_repository.create(ProjectSchema(**create_args))
 
     async def update_token(self, project: ProjectSchema) -> ProjectSchema:
-        widget = project.widget
+        widget_id = project.widget_id
+        widget = await self.widgets_repository.get_by_id(widget_id)
         response = await AmoTokensApi.get_tokens_by_refresh(
             widget.client_id,
             widget.secret_key,
