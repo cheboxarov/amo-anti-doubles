@@ -30,7 +30,7 @@ async def install(
     """
     try:
         subdomain = referer.split(".")[0]
-        service.install_widget(code, client_id, subdomain)
+        await service.install_widget(code, client_id, subdomain)
     except Exception as error:
         logger.error(f"Error for install widget {error}")
         logger.error(traceback.format_exc())
