@@ -10,9 +10,9 @@ class ProjectModel(BaseModel):
     __tablename__ = "projects"
 
     id = Column(Integer, primary_key=True, index=True)
-    subdomain = Column(String, unique=True)
-    access_token = Column(String, nullable=True)
-    refresh_token = Column(String, nullable=True)
+    subdomain = Column(String)
+    access_token = Column(String)
+    refresh_token = Column(String)
     is_active = Column(Boolean, default=True)
     unactive_reason = Column(String, nullable=True)
     is_admin = Column(Boolean, default=False)

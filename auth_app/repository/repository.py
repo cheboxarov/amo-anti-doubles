@@ -15,6 +15,7 @@ class Repository:
         self.async_session_factory = async_session_factory
 
     async def init_db(self):
+        return
         async with self.engine.begin() as conn:
             await conn.run_sync(BaseModel.metadata.create_all)
 
