@@ -34,6 +34,8 @@ class AuthService:
         )
         access_token, refresh_token = response.get("access_token"), response.get("refresh_token")
 
+        logger.debug(f"Получены токены : {access_token}, {refresh_token}")
+
         project = await self.projects_repository.get_by_widget_and_subdomain(subdomain, widget.id)
 
         create_args = {
@@ -44,6 +46,8 @@ class AuthService:
             "is_active": project.is_active if project else True,
             "is_admin": project.is_admin if project else False,
         }
+
+        logger.debug(f"create args {create_args}")
 
         if project and not await self.projects_repository.delete(project.id):
             raise ValueError(f"Failed to delete project with id {project.id}")
