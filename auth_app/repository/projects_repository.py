@@ -35,7 +35,7 @@ class ProjectsRepository:
         return await self.get_by_filter(ProjectModel.subdomain == subdomain)
     
     async def get_by_widget_and_subdomain(self, subdomain: str, widget_id: int) -> Optional[ProjectSchema]:
-        return await self.get_by_filter(ProjectModel.subdomain == subdomain and ProjectModel.widget_id == widget_id)
+        return await self.get_by_filter((ProjectModel.subdomain == subdomain) & (ProjectModel.widget_id == widget_id))
 
     async def get_all(self) -> List[ProjectSchema]:
         async with self.session_factory() as session:
