@@ -1,5 +1,6 @@
 from loguru import logger
 from httpx import AsyncClient, Response
+from config import INSTALL_WIDET
 
 
 def validate_amo_response(func):
@@ -34,7 +35,7 @@ class AmoTokensApi:
             "client_secret": client_secret,
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": "https://apps.widgets-tema.ru/amo-roistat-fix/install/",
+            "redirect_uri": INSTALL_WIDET,
         }
         async with AsyncClient() as client:
             response = await client.post(url, json=body)
