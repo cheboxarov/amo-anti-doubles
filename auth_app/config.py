@@ -1,3 +1,5 @@
-DATABASE_URL = "postgresql+asyncpg://postgres:qwery@db:5432/postgres"
-REDIS_URL = "redis://redis:6379"
-INSTALL_WIDET = "https://apps.widgets-tema.ru/auth/install"
+import os
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+REDIS_URL = os.environ.get("REDIS_URL")
+INSTALL_WIDET = os.environ.get("INSTALL_WIDET")

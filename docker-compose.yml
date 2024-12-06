@@ -9,6 +9,10 @@ services:
     image: redis:7.0.5-alpine
     expose:
       - 6379
+    ports:
+      - "6379:6379"
+    env_file:
+      - .env
 
   db:
     restart: always
@@ -37,10 +41,13 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
       - ./auth_app:/auth_app
+    env_file:
+      - ./auth_app/.env
     expose:
       - 8000
 
   nginx:
+    restart: always
     image: nginx:1.19.8-alpine
     ports:
       - "88:80"
