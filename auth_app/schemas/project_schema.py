@@ -32,6 +32,13 @@ class ProjectSchema(ProjectBaseSchema):
     class Config:
         from_attributes = True
 
+class ProjectWithoutRefreshSchema(ProjectBaseSchema):
+    id: Optional[int] = None
+    access_token: Optional[str]
+
+    class Config:
+        from_attributes = True
+
 class GetMeRequest(BaseModel):
     subdomain: str
     uuid: str

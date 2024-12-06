@@ -92,11 +92,14 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
 
         if project is None:
             return error_response
+        
+        user_data = await redis_client.redis.get(f"token:{token}")
 
-        if (user_data := await redis_client.redis.get(f"token:{token}")) is not None:
+        if user_data is not None:
             is_admin = json.loads(user_data)["is_admin"]
         else:
-            project = await auth_service.update_token(project)
+            if project.access_token != project.refresh_token:
+                project = await auth_service.update_token(project)
             amo_api = project_service.get_api(project)
             users = await amo_api.users.get_all(with_="uuid")
             try:
@@ -107,10 +110,15 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
                         "project": project.model_dump()
                         }), ex=300
                 )
+                logger.debug("Юзер записан в кеш")
             except KeyError:
                 return error_response
 
         request.state.project = project
         request.state.is_admin = is_admin
 
-        return await call_next(request)
+        response = await call_next(request)
+
+        response.headers["Token-Exp"] = str(await redis_client.redis.ttl(f"token:{token}"))
+
+        return response

@@ -2,7 +2,8 @@ from schemas.project_schema import (
     ProjectSchema,
     ProjectUpdateSchema,
     ProjectCreateSchema,
-    GetMeRequest
+    GetMeRequest,
+    ProjectWithoutRefreshSchema
 )
 from fastapi import APIRouter, Depends, status, Request
 from services.project_service import ProjectsService
@@ -92,12 +93,7 @@ async def delete_project(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@router.get("/me", response_model=ProjectSchema)
+@router.get("/me", response_model=ProjectWithoutRefreshSchema)
 async def get_me(request: Request, base_project=Depends(permissions.ProjectChecker(is_active=True))):
-    project = request.state.project
-    return project
-
-@router.get("api/me", response_model=ProjectSchema)
-async def get_me(request: Request):
     project = request.state.project
     return project
