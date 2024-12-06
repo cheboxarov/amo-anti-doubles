@@ -5,14 +5,16 @@ volumes:
 
 services:
   redis:
-    restart: always
     image: redis:7.0.5-alpine
+    container_name: redis
+    restart: always
     expose:
       - 6379
     ports:
       - "6379:6379"
-    env_file:
-      - .env
+    environment:
+      - REDIS_PASSWORD=laksjdweriuywyueryuuwey123123
+    command: "redis-server --requirepass laksjdweriuywyueryuuwey123123"
 
   db:
     restart: always

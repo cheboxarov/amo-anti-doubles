@@ -9,7 +9,7 @@ class WidgetSchema(BaseModel):
     secret_key: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class WidgetCreateSchema(BaseModel):
@@ -18,7 +18,7 @@ class WidgetCreateSchema(BaseModel):
     secret_key: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class WidgetUpdateSchema(BaseModel):
@@ -27,4 +27,4 @@ class WidgetUpdateSchema(BaseModel):
     secret_key: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True

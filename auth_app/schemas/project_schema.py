@@ -30,7 +30,7 @@ class ProjectSchema(ProjectBaseSchema):
     refresh_token: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class GetMeRequest(BaseModel):
     subdomain: str
