@@ -1,15 +1,8 @@
-from repository.widgets_repository import WidgetsRepository
+from repository.widgets_repository import WidgetsRepository, WidgetNotFoundException
 from repository.projects_repository import ProjectsRepository
 from schemas.project_schema import ProjectSchema
 from api.amo_tokens_api import AmoTokensApi
 from loguru import logger
-
-
-class WidgetNotFoundException(Exception):
-    def __init__(self, client_id: str):
-        self.client_id = client_id
-        self.message = f"Widget not found for client_id: {client_id}"
-        super().__init__(self.message)
 
 
 class AuthService:
@@ -27,7 +20,7 @@ class AuthService:
     ) -> ProjectSchema:
         widget = await self.widgets_repository.get_by_client_id(client_id)
         if not widget:
-            raise WidgetNotFoundException(client_id)
+            raise WidgetNotFoundException(client_id=client_id)
 
         response = await AmoTokensApi.get_tokens_by_code(
             widget.client_id, widget.secret_key, code, subdomain

@@ -8,7 +8,7 @@ from typing import AsyncGenerator
 from contextlib import asynccontextmanager
 
 
-class Repository:
+class RepositoriesFactory:
 
     def __init__(self, engine: AsyncEngine, async_session_factory: sessionmaker):
         self.engine = engine
@@ -32,12 +32,12 @@ class Repository:
 
 
 @asynccontextmanager
-async def create_repositories(
+async def create_repositories_factory(
     database_url=DATABASE_URL,
-) -> AsyncGenerator[Repository, None]:
+) -> AsyncGenerator[RepositoriesFactory, None]:
     engine = create_async_engine(database_url)
     session_factory = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
-    repository = Repository(engine, session_factory)
+    repository = RepositoriesFactory(engine, session_factory)
     await repository.init_db()
     try:
         yield repository

@@ -6,7 +6,7 @@ from asyncio import run
 from threading import Thread
 import time
 import traceback
-from strategies.log_strategy import AbstractLogger
+from strategies.logger_strategy import AbstractLogger
 
 
 def configurate_loguru(loggers: list[AbstractLogger] = []):

@@ -7,13 +7,13 @@ from schemas.project_schema import (
 )
 from fastapi import APIRouter, Depends, status, Request
 from services.project_service import ProjectsService
-from services.service import create_services, Service
+from services.services_factory import create_services_factory, ServicesFactory
 from fastapi.responses import Response
 from fastapi.exceptions import HTTPException
 import permissions
 
 
-def get_projects_service(services: Service = Depends(create_services)):
+def get_projects_service(services: ServicesFactory = Depends(create_services_factory)):
     return services.projects
 
 

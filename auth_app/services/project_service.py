@@ -1,4 +1,5 @@
 from repository.projects_repository import ProjectsRepository
+from repository.widgets_repository import WidgetsRepository, WidgetNotFoundException
 from typing import Optional
 from schemas.project_schema import ProjectSchema
 from py_amo.services import AsyncAmoSession
@@ -6,8 +7,9 @@ from py_amo.services import AsyncAmoSession
 
 class ProjectsService:
 
-    def __init__(self, repository: ProjectsRepository):
+    def __init__(self, repository: ProjectsRepository, widgets_repo: WidgetsRepository):
         self.repository = repository
+        self.widgets_repo = widgets_repo
 
     async def get_by_id(self, project_id: int) -> Optional[ProjectSchema]:
         return await self.repository.get_by_id(project_id)
@@ -16,6 +18,8 @@ class ProjectsService:
         return await self.repository.get_by_subdomain(subdomain)
     
     async def get_by_widget_and_subdomain(self, subdomain: str, widget_id: int) -> Optional[ProjectSchema]:
+        if not self.widgets_repo.get_by_id(widget_id):
+            return WidgetNotFoundException(id=widget_id)
         return await self.repository.get_by_widget_and_subdomain(subdomain, widget_id)
 
     async def get_all(self) -> list[ProjectSchema]:

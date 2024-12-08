@@ -6,6 +6,19 @@ from sqlalchemy import select, insert, update, delete
 from .models import WidgetModel
 from sqlalchemy.sql import expression
 
+class WidgetNotFoundException(Exception):
+    def __init__(self, **kwargs):
+        if client_id := kwargs.get("client_id"):
+            self.client_id = client_id
+            self.message = f"Widget not found for client_id: {client_id}"
+            super().__init__(self.message)
+        elif id := kwargs.get("id"):
+            self.id = id
+            self.message = f"Widget not found for id: {id}"
+            super().__init__(self.message)
+        else:
+            raise NotImplemented()
+            
 
 class WidgetsRepository:
     def __init__(

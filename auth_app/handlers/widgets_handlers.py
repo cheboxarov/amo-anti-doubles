@@ -2,11 +2,11 @@ from schemas.widget_schema import WidgetSchema, WidgetCreateSchema, WidgetUpdate
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from services.widgets_service import WidgetsService
-from services.service import create_services, Service
+from services.services_factory import create_services_factory, ServicesFactory
 from fastapi.responses import Response
 
 
-def get_widgets_service(services: Service = Depends(create_services)):
+def get_widgets_service(services: ServicesFactory = Depends(create_services_factory)):
     return services.widgets
 
 

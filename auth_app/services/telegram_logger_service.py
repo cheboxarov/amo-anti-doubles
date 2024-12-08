@@ -1,7 +1,7 @@
 from telegram import Bot
 from asyncio import run
 from utils import create_log_file
-from strategies.log_strategy import AbstractLogger
+from strategies.logger_strategy import AbstractLogger
 from dotenv import load_dotenv
 from loguru import logger
 import os

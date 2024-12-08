@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
-from services.service import Service, create_services
+from services.services_factory import ServicesFactory, create_services_factory
 from services.auth_service import AuthService
 from loguru import logger
 import traceback
 
 
-def get_auth_service(services: Service = Depends(create_services)):
+def get_auth_service(services: ServicesFactory = Depends(create_services_factory)):
     return services.auth
 
 

@@ -1,6 +1,6 @@
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Request, Response, HTTPException, Depends
-from services.service import create_services, Service
+from services.services_factory import create_services_factory, ServicesFactory
 from services.project_service import ProjectsService
 import json
 from fastapi.responses import JSONResponse
@@ -67,7 +67,7 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         if request.url.path == "/install":
             return await call_next(request)
 
-        services = await create_services()
+        services = await create_services_factory()
         project_service = services.projects
         widget_service = services.widgets
         auth_service = services.auth
