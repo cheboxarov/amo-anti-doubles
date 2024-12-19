@@ -98,8 +98,11 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         if user_data is not None:
             is_admin = json.loads(user_data)["is_admin"]
         else:
-            if project.access_token != project.refresh_token:
+            if project.access_token != project.refresh_token and not await redis_client.redis.get(f"project:{subdomain}"):
                 project = await auth_service.update_token(project)
+                await redis_client.redis.set(
+                    f"project:{subdomain}", "yes", ex=300
+                )
             amo_api = project_service.get_api(project)
             users = await amo_api.users.get_all(with_="uuid")
             try:
@@ -119,6 +122,6 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
 
         response = await call_next(request)
 
-        response.headers["Token-Exp"] = str(await redis_client.redis.ttl(f"token:{token}"))
+        response.headers["Token-Exp"] = str(await redis_client.redis.ttl(f"project:{subdomain}"))
 
         return response
