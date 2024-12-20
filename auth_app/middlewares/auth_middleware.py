@@ -1,5 +1,5 @@
 from starlette.middleware.base import BaseHTTPMiddleware
-from fastapi import Request, Response, HTTPException, Depends
+from fastapi import Request
 from services.services_factory import create_services_factory, ServicesFactory
 from services.project_service import ProjectsService
 import json
@@ -8,6 +8,7 @@ import redis_client
 from typing import Optional
 from schemas.widget_schema import WidgetSchema
 from services.widgets_service import WidgetsService
+from schemas.project_schema import ProjectSchema
 from loguru import logger
 import asyncio
 
@@ -100,12 +101,12 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
             is_admin = user_data["is_admin"]
             project = user_data["project"]
 
-        else:
+        else: 
 
             project = await project_service.get_by_widget_and_subdomain(subdomain, widget.id)
+            
             if project is None:
                 return error
-            
             
             if project.access_token != project.refresh_token and not await redis_client.redis.get(f"project:{subdomain}"):
 
@@ -114,13 +115,15 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
 
                 async with token_update_locks[subdomain]:
                     if not await redis_client.redis.get(f"project:{subdomain}"):
-                        project = await auth_service.update_token(project)
+                        await auth_service.update_token(project)
                         await redis_client.redis.set(
-                            f"project:{subdomain}", "yes", ex=300
+                            f"project:{subdomain}", json.dumps(project.model_dump()), ex=300
                         )
 
                 token_update_locks.pop(subdomain, None)
 
+            project = ProjectSchema.model_validate(json.loads(await redis_client.redis.get(f"project:{subdomain}")))
+            
             amo_api = project_service.get_api(project)
             users = await amo_api.users.get_all(with_="uuid")
 
