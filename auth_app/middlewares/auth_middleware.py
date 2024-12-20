@@ -9,6 +9,10 @@ from typing import Optional
 from schemas.widget_schema import WidgetSchema
 from services.widgets_service import WidgetsService
 from loguru import logger
+import asyncio
+
+
+token_update_locks = {}
 
 
 class AuthorizeMiddleware(BaseHTTPMiddleware):
@@ -99,10 +103,15 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
             is_admin = json.loads(user_data)["is_admin"]
         else:
             if project.access_token != project.refresh_token and not await redis_client.redis.get(f"project:{subdomain}"):
-                project = await auth_service.update_token(project)
-                await redis_client.redis.set(
-                    f"project:{subdomain}", "yes", ex=300
-                )
+                if subdomain not in token_update_locks:
+                    token_update_locks[subdomain] = asyncio.Lock()
+                async with token_update_locks[subdomain]:
+                    if not await redis_client.redis.get(f"project:{subdomain}"):
+                        project = await auth_service.update_token(project)
+                        await redis_client.redis.set(
+                            f"project:{subdomain}", "yes", ex=300
+                        )
+                token_update_locks.pop(subdomain, None)
             amo_api = project_service.get_api(project)
             users = await amo_api.users.get_all(with_="uuid")
             try:
