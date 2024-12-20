@@ -91,20 +91,19 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         subdomain, error = await self.get_subdomain_from_request(request)
         if error is not None:
             return error
-
-        if project is None:
-            return error_response
         
         user_data = await redis_client.redis.get(f"token:{token}-{subdomain}")
 
         if user_data is not None:
-            
+
             user_data = json.loads(user_data)
             is_admin = user_data["is_admin"]
             project = user_data["project"]
 
         else:
             project = await project_service.get_by_widget_and_subdomain(subdomain, widget.id)
+            if project is None:
+                return error
             if project.access_token != project.refresh_token and not await redis_client.redis.get(f"project:{subdomain}"):
 
                 if subdomain not in token_update_locks:
