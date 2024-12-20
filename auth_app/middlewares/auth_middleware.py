@@ -92,37 +92,44 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         if error is not None:
             return error
 
-        project = await project_service.get_by_widget_and_subdomain(subdomain, widget.id)
-
         if project is None:
             return error_response
         
-        user_data = await redis_client.redis.get(f"token:{token}")
+        user_data = await redis_client.redis.get(f"token:{token}-{subdomain}")
 
         if user_data is not None:
-            is_admin = json.loads(user_data)["is_admin"]
+            
+            user_data = json.loads(user_data)
+            is_admin = user_data["is_admin"]
+            project = user_data["project"]
+
         else:
+            project = await project_service.get_by_widget_and_subdomain(subdomain, widget.id)
             if project.access_token != project.refresh_token and not await redis_client.redis.get(f"project:{subdomain}"):
+
                 if subdomain not in token_update_locks:
                     token_update_locks[subdomain] = asyncio.Lock()
+
                 async with token_update_locks[subdomain]:
                     if not await redis_client.redis.get(f"project:{subdomain}"):
                         project = await auth_service.update_token(project)
                         await redis_client.redis.set(
                             f"project:{subdomain}", "yes", ex=300
                         )
+
                 token_update_locks.pop(subdomain, None)
+
             amo_api = project_service.get_api(project)
             users = await amo_api.users.get_all(with_="uuid")
+
             try:
                 is_admin = {user.uuid: user for user in users}[token].role == "admin"
                 await redis_client.redis.set(
-                    f"token:{token}", json.dumps({
+                    f"token:{token}-{subdomain}", json.dumps({
                         "is_admin": is_admin,
                         "project": project.model_dump()
                         }), ex=300
                 )
-                logger.debug("Юзер записан в кеш")
             except KeyError:
                 return error_response
 
