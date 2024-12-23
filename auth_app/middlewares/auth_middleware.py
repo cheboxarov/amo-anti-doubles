@@ -99,7 +99,7 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
 
             user_data = json.loads(user_data)
             is_admin = user_data["is_admin"]
-            project = user_data["project"]
+            project = ProjectSchema.model_validate(user_data["project"])
 
         else: 
 
@@ -113,16 +113,22 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
                 if subdomain not in token_update_locks:
                     token_update_locks[subdomain] = asyncio.Lock()
 
-                async with token_update_locks[subdomain]:
-                    if not await redis_client.redis.get(f"project:{subdomain}"):
-                        await auth_service.update_token(project)
-                        await redis_client.redis.set(
-                            f"project:{subdomain}", json.dumps(project.model_dump()), ex=300
-                        )
+                lock = token_update_locks[subdomain]
+                try:
+                    async with lock:
+                        if not await redis_client.redis.get(f"project:{subdomain}"):
+                            await auth_service.update_token(project)
+                            await redis_client.redis.set(
+                                f"project:{subdomain}", json.dumps(project.model_dump()), ex=300
+                            )
+                finally:
+                    token_update_locks.pop(subdomain, None)
 
-                token_update_locks.pop(subdomain, None)
-
-            project = ProjectSchema.model_validate(json.loads(await redis_client.redis.get(f"project:{subdomain}")))
+            project_data = await redis_client.redis.get(f"project:{subdomain}")
+            if project_data:
+                project = ProjectSchema.model_validate(json.loads(project_data))
+            else:
+                return error_response
             
             amo_api = project_service.get_api(project)
             users = await amo_api.users.get_all(with_="uuid")
