@@ -93,6 +93,11 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         if error is not None:
             return error
         
+        private = request.headers.get("private",  False)
+
+        if private:
+            widget = f"{widget}_{subdomain}"
+        
         user_data = await redis_client.redis.get(f"token:{token}-{subdomain}")
 
         if user_data is not None:
