@@ -45,9 +45,11 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         return token, None
     
     @classmethod
-    async def get_widget_from_request(cls, request: Request, widget_service: WidgetsService) -> tuple[Optional[WidgetSchema], Optional[JSONResponse]]:
+    async def get_widget_from_request(cls, request: Request, widget_service: WidgetsService, subdomain: str) -> tuple[Optional[WidgetSchema], Optional[JSONResponse]]:
 
         widget_name = request.headers.get("widget")
+        if request.headers.get("private"):
+            widget_name = f"{widget_name}_{subdomain}"
         logger.info(f"widget_name {widget_name}")
         if widget_name is None:
             return None, cls.ERROR_RESPONSE
@@ -84,19 +86,14 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
         token, error = await self.get_token_from_request(request)
         if error is not None:
             return error
-        
-        widget, error = await self.get_widget_from_request(request, widget_service)
-        if error is not None:
-            return error
 
         subdomain, error = await self.get_subdomain_from_request(request)
         if error is not None:
             return error
-        
-        private = request.headers.get("private",  False)
-
-        if private:
-            widget = f"{widget}_{subdomain}"
+    
+        widget, error = await self.get_widget_from_request(request, widget_service, subdomain)
+        if error is not None:
+            return error
         
         user_data = await redis_client.redis.get(f"token:{token}-{subdomain}")
 
