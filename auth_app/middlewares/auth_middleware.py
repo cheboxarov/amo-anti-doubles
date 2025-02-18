@@ -49,6 +49,7 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
 
         widget_name = request.headers.get("widget")
         if request.headers.get("private"):
+            logger.info(f"private widget {widget_name}")
             widget_name = f"{widget_name}_{subdomain}"
         logger.info(f"widget_name {widget_name}")
         if widget_name is None:
