@@ -42,7 +42,8 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
             headers = {
                 "Authorization": f"Bearer {token}",
                 "Origin": request.headers.get("Origin"),
-                "widget": "antidoubles"
+                "widget": "antidoubles",
+                "private": "t"
             }
             auth_response = await client.get(AUTH_SERVICE_URL, headers=headers)
             if auth_response.status_code != 200:
