@@ -18,7 +18,7 @@ class ProjectsService:
         return await self.repository.get_by_subdomain(subdomain)
     
     async def get_by_widget_and_subdomain(self, subdomain: str, widget_id: int) -> Optional[ProjectSchema]:
-        if not self.widgets_repo.get_by_id(widget_id):
+        if not await self.widgets_repo.get_by_id(widget_id):
             return WidgetNotFoundException(id=widget_id)
         return await self.repository.get_by_widget_and_subdomain(subdomain, widget_id)
 
