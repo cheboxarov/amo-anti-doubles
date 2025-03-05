@@ -20,7 +20,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=qwery
     ports:
-      - "5444:5432"
+      - "54cd 44:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     expose:
