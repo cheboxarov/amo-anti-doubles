@@ -142,7 +142,7 @@ class AuthorizeMiddleware(BaseHTTPMiddleware):
                     f"token:{token}-{subdomain}", json.dumps({
                         "is_admin": is_admin,
                         "project": project.model_dump()
-                        }), ex=300
+                        }), ex=60*30
                 )
             except KeyError:
                 return error_response
